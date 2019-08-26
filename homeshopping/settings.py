@@ -146,7 +146,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.sendgrid.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'fakharudin99@gmail.com'
 EMAIL_HOST_PASSWORD = 'fakhar_efyudi1122'
 EMAIL_PORT = 587

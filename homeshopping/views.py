@@ -115,9 +115,7 @@ class Checkout(TemplateView):
             message = """Thank You for shopping with Homeshopping.pk\n
                          Track your order """ + str(order.id) + """ id we hope you had a great time shopping with us !"""
 
-            email_to_send = EmailMessage(
-                subject, message, settings.EMAIL_HOST_USER, [email])
-            email_to_send.send()
+            send_mail(subject, message, 'fakharudin99@gmail.com',[email])
 
             return render(request, 'thank-you.html', {"order_id": order.id, "email": email})
         else:
