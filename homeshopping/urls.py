@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('accounts/', include('accounts.urls'), name='accounts'),
     path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
-    path('products/', include("products.urls"), name='products'),
+    path('products/', include('products.urls'), name='products'),
     path('home/', views.Homepage.as_view(), name='home'),
     path('checkout/', views.Checkout.as_view(), name='checkout'),
     path('search/', views.Search.as_view(), name='search'),
