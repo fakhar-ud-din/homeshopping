@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %} Homeshopping - Login {% endblock %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="login-heading">
+                <h3>Login</h3>
+            </div>
+            <div>
+                <p>We've been waiting for you ! Log In !</p>
+            </div>
+            <div id="review-form">
+                <form class="login-content" method="POST" action="">
+                    <table>
+                        {{ form.as_table }}
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><button class="primary-btn" type="submit" value="Submit">Login</button></td>
+                        </tr>
+                    </table>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

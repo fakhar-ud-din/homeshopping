@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Homeshopping - Thank You {% endblock %}
+
+{% block content %}
+
+<body onload="myFunction()">
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="thank-you">
+                    <div class="login-heading">
+                        <h3>Thank You</h3>
+                    </div>
+                    <div id="review-form">
+                        <p class="thankyou-message">
+                            {% ifequal request.method 'POST'%}
+                            Thank You for shopping with <strong>Homeshopping.pk</strong><br>
+                            Track your order with <strong>{{ order_id }}</strong> id, and we hope you had a great time
+                            shopping
+                            with us !
+                            <br>
+                            An Email has also been sent to <strong>{{email}}</strong> with your order id.
+                            <br>
+                            <br>
+                            You will be redirected to home in <strong id="countdown">10</strong>
+                            sec
+                            {% endifequal %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function myFunction() {
+            $(document).ready(function () {
+                var number = 10;
+                var interval = setInterval(function () {
+                    $('#countdown').text(number--);
+                    if (number < 1) {
+                        setTimeout("location.href = '/home/';", 0);
+                    }
+                }, 1000);
+
+            });
+
+        };
+
+    </script>
+</body>
+{% endblock %}

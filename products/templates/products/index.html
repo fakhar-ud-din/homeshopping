@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Home Shopping - {{ title | default:"Pakistan's Online Shopping Store" }} {% endblock %}
+{% block list_catogaries %}
+{% for category in categories %}
+<li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
+{%  endfor %}
+{% endblock %}
+
+{% block content %}
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div id="banner-img" class="col-ms-12">
+                <img src="{{ banner.banner.url }}" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+
+    <!-- /SECTION -->
+
+    <!----------------------------------PRODUCTS------------------------------------------>
+    <!-- SECTION -->
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h3 class="title">{{ title }}</h3>
+                    <div class="horizontal-line"></div>
+                    <div class="section-nav">
+                        <ul class="section-tab-nav tab-nav">
+                            {% for subcategory in subcategories %}
+                            <li><a href="{% url 'brands' subcategory.name %}">{{ subcategory.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /section title -->
+            <!-- Products tab & slick -->
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="products-tabs">
+                        <!-- tab -->
+                        <div id="tab1" class="tab-pane active">
+
+                            <!-- product -->
+                            {% for item in items %}
+                            <div class="col-md-3 products-display">
+                                <div class="product">
+                                    <div class="product-img">
+                                        <img src=" {{ item.pictures.url }} " alt="">
+                                        <div class="product-label">
+                                            <span class="sale">-30%</span>
+                                            <span class="new">NEW</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-body">
+                                        <p class="product-category">{{ item.subcategory }}</p>
+                                        <h3 class="product-name"><a
+                                                href="{% url 'item' item.name %}">{{ item.name }}</a>
+                                        </h3>
+                                        <h4 class="product-price">Rs {{ item.price }} /-
+                                        </h4>
+                                        <div class="product-description">
+                                            <p class="description">{{ item.short_description }}</p>
+                                        </div>
+                                        <div class="product-rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="product-btns">
+                                            <button type="submit" value="{{item.name}}"
+                                                onclick="add_item_to_wishlist(this)" class="add-to-cart-btn"
+                                                id="add-item-to-cart"><i class="fa fa-heart-o"></i><span
+                                                    class="tooltipp">add to wishlist</span></button>
+                                            <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                    class="tooltipp">add to compare</span></button>
+                                            <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                    class="tooltipp">quick
+                                                    view</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="add-to-cart">
+                                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                            cart</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            {% endfor %}
+
+                            <!-- /product -->
+                        </div>
+                        <!-- /tab -->
+                    </div>
+                </div>
+            </div>
+            <!-- Products tab & slick -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+</div>
+<!-- /SECTION -->
+<!------------------------------------------------////////////PRODUCTS---------------------------------->
+
+{% endblock %}

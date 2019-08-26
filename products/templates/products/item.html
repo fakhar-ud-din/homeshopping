@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Home Shopping - {{ title | default:"Pakistan's Online Shopping Store" }} {% endblock %}
+{% block list_catogaries %}
+{% for category in categories %}
+<li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
+{%  endfor %}
+{% endblock %}
+{% block header-content %}
+<div class="col-md-3">
+	<div class="header-ctn">
+		<!-- Wishlist -->
+		<div>
+			<a href="#">
+				<i class="fa fa-heart-o"></i>
+				<span>Your Wishlist</span>
+				<div class="qty">
+					{% if wishlist_count %}
+					{{ wishlist_count }}
+					{% else %}
+					0
+					{% endif %}
+				</div>
+			</a>
+		</div>
+		<!-- /Wishlist -->
+
+		<!-- Cart -->
+		<div class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+				<i class="fa fa-shopping-cart"></i>
+				<span>Your Cart</span>
+				<div class="qty">
+					{% if cart_count %}
+					{{ cart_count }}
+					{% else %}
+					0
+					{% endif %}
+				</div>
+			</a>
+			<div class="cart-dropdown">
+				<div class="cart-list">
+					{% for item in cart_items %}
+					<div class="product-widget">
+						<div class="product-img">
+							<img src="{{ item.pictures.url }}" alt="">
+						</div>
+						<div class="product-body">
+							<h3 class="product-name"><a href="#">{{ item.name }}</a></h3>
+							<h4 class="product-price"><span class="qty">1x</span>{{ item.price }}</h4>
+						</div>
+						<button value="{{item.name}}" class="delete" onclick="delete_from_cart(this)"><i
+								class="fa fa-close"></i></button>
+					</div>
+					{% endfor %}
+				</div>
+				<div class="cart-summary">
+					<small>{{ cart_count }} Item(s) selected</small>
+					<h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
+				</div>
+				<div class="cart-btns">
+					<a href="#">View Cart</a>
+					<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- /Cart -->
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<div class="col-md-12">
+				<ul class="breadcrumb-tree">
+					<li><a href="{% url 'home' %}">Home</a></li>
+					<li><a href="{% url 'category' product.category%}">{{ product.category }}</a></li>
+					<li><a href="{% url 'brands' product.subcategory%}">{{ product.subcategory }}</a></li>
+					<li class="active">{{ product.name }}</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- SECTION -->
+<div class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<!-- Product main img -->
+			<div class="col-md-5 col-md-push-2">
+				<div>
+					<div class="product-preview">
+						<img src="{{ product.pictures.url }}" alt="">
+					</div>
+				</div>
+			</div>
+			<!-- Product thumb imgs -->
+			<div class="col-md-2  col-md-pull-5">
+				<div id="product-imgs">
+					<div class="product-preview">
+						<img src="{{product.pictures.url}}" alt="">
+					</div>
+				</div>
+			</div>
+			<!-- /Product thumb imgs -->
+
+			<!-- Product details -->
+			<div class="col-md-5">
+				<div class="product-details">
+					<h2 class="product-name" id="product_name">{{ product.name }}</h2>
+					<div>
+						<div class="product-rating">
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-o"></i>
+						</div>
+						<a class="review-link" data-toggle="tab" href="#tab3">({{ count_reviews }}) Review(s) | Add your
+							review</a>
+					</div>
+					<div>
+						<h3 class="product-price">Rs {{ product.price }} /-</h3>
+						{% if product.is_available > 0 %}
+						<span class="product-available active">In Stock</span>
+						{% else %}
+						<span class="product-not-available active">Out of Stock</span>
+						{% endif %}
+					</div>
+					<p>{{ product.short_description }}</p>
+
+					<div class="qty-update">
+						<h6 id="qty-errors"></h6>
+						<h6 id="qty-message"></h6>
+					</div>
+
+					<div class="add-to-cart">
+						<div class="qty-label">
+							Qty
+							<div class="input-number">
+								<input type="number" id="qty" value="1" min="1" max="{{product.is_available}}">
+								<span class="qty-up">+</span>
+								<span class="qty-down">-</span>
+							</div>
+						</div>
+						<button button type="submit" value="{{product.name}}" onclick="add_item_to_cart_function(this)"
+							class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+							cart</button>
+					</div>
+					<div class="product-btns">
+						<div class="item-btn">
+							<button value="{{ product.name }}" onclick="add_item_to_wishlist(this)"
+								class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp"> Add To
+									Wishlist</span></button>
+						</div>
+					</div>
+
+					<ul class="product-links">
+						<li>Category:</li>
+						<li><a href="{% url 'category' product.category %}">{{ product.category }}</a></li>
+						<li><a href="{% url 'brands' product.subcategory %}">{{ product.subcategory }}</a></li>
+					</ul>
+
+					<ul class="product-links">
+						<li>Share:</li>
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#"><i class="fa fa-envelope"></i></a></li>
+					</ul>
+
+				</div>
+			</div>
+			<!-- /Product details -->
+
+			<!-- Product tab -->
+			<div class="col-md-12">
+				<div id="product-tab">
+					<!-- product tab nav -->
+					<ul class="tab-nav">
+						<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
+						<li><a data-toggle="tab" href="#tab2">Details</a></li>
+						<li><a data-toggle="tab" href="#tab3">Reviews ({{ count_reviews }})</a></li>
+					</ul>
+					<!-- /product tab nav -->
+
+					<!-- product tab content -->
+					<div class="tab-content">
+						<!-- tab1  -->
+						<div id="tab1" class="tab-pane fade in active">
+							<div class="row">
+								<div class="col-md-12">
+									<p>{{ product.short_description }}</p>
+								</div>
+							</div>
+						</div>
+						<!-- /tab1  -->
+
+						<!-- tab2  -->
+						<div id="tab2" class="tab-pane fade in">
+							<div class="row">
+								<div class="col-md-12">
+									<p>{{ product.description }}</p>
+								</div>
+							</div>
+						</div>
+						<!-- /tab2  -->
+						<div id="tab3" class="tab-pane fade in">
+							<div class="row">
+
+								<!-- Reviews -->
+								<div class="col-md-6">
+									<div id="reviews">
+										<ul class="reviews">
+											{% if count_reviews %}
+											{% for each_review in reviews %}
+											<li>
+												<div class="review-heading">
+													<h5 class="name">{{ each_review.name }}</h5>
+													<p class="date">{{ each_review.date }}</p>
+													<div class="review-rating">
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star-o empty"></i>
+													</div>
+												</div>
+												<div class="review-body">
+													<p>{{ each_review.review }}</p>
+												</div>
+											</li>
+											{% endfor %}
+											{% else %}
+											<li>
+												<div class="review-heading">
+													<h5 class="name">No Reviews</h5>
+												</div>
+											</li>
+											{% endif %}
+										</ul>
+									</div>
+								</div>
+								<!-- /Reviews -->
+
+								<!-- Review Form -->
+								<div class="col-md-3">
+									<div id="review-form">
+										{% if submitted %}
+										<p class="review-submitted">Thank You for you Feedback !</p>
+										{% else %}
+										<form class="review-form" method="POST" action="">
+											<table>
+												{{form.as_table}}
+												<tr>
+													<td>
+														<!--<div class="input-rating">
+															<span>Your Rating: </span>
+															<div class="stars">
+																<input id="star5" name="rating" value="5"
+																	type="radio"><label for="star5"></label>
+																<input id="star4" name="rating" value="4"
+																	type="radio"><label for="star4"></label>
+																<input id="star3" name="rating" value="3"
+																	type="radio"><label for="star3"></label>
+																<input id="star2" name="rating" value="2"
+																	type="radio"><label for="star2"></label>
+																<input id="star1" name="rating" value="1"
+																	type="radio"><label for="star1"></label>
+															</div>
+														</div>
+														-->
+														&nbsp;
+													</td>
+													<td><button class="primary-btn" type="submit">Submit</button></td>
+												</tr>
+											</table>
+											{% csrf_token %}
+										</form>
+										{% endif %}
+									</div>
+								</div>
+								<!-- /Review Form -->
+							</div>
+						</div>
+						<!-- /product tab content  -->
+					</div>
+				</div>
+				<!-- /product tab -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
+</div>
+<!-- Section -->
+<div class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+
+			<div class="col-md-12">
+				<div class="section-title text-center">
+					<h3 class="title">Related Products</h3>
+				</div>
+			</div>
+			{% for each_product in relevent_products %}
+			<!-- product -->
+			<div class="col-md-3 col-xs-6">
+				<div class="product">
+					<div class="product-img">
+						<div class="related-img">
+							<img src="{{ each_product.pictures.url }}" alt="">
+						</div>
+						<div class="product-label">
+							<span class="sale">-30%</span>
+						</div>
+					</div>
+					<div class="product-body">
+						<p class="product-category">Category</p>
+						<h3 class="product-name"><a href="{% url 'item' each_product.name%}">{{ each_product.name }}</a>
+						</h3>
+						<h4 class="product-price">Rs {{ each_product.price }} /-</h4>
+						<div class="product-description">
+							<p class="description">{{ each_product.short_description }}</p>
+						</div>
+						<div class="product-rating">
+						</div>
+						<div class="product-btns">
+							<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add
+									to
+									wishlist</span></button>
+							<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add
+									to
+									compare</span></button>
+							<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
+									view</span></button>
+						</div>
+					</div>
+					<div class="add-to-cart">
+						<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+			<!-- /product -->
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+</div>
+<!-- /Section -->
+
+{% endblock %}

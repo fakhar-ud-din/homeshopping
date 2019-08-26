@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %} Homeshopping - Sign up {% endblock %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="login-heading">
+                <h3>SIGN UP</h3>
+            </div>
+            <div id="review-form">
+                <p>A New User? Great!</p>
+                <form class="login-content" method="POST" action="">
+                    <table>
+                        {% for field in form %}
+                        <tr>
+                            <td>{{ field.label_tag }}</td>
+                            <td>{{ field }}</td>
+                            {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Already have an account?<a href="{% url 'login' %}"> <strong
+                                            style="color: #4ba029;">Log
+                                            In</strong></a></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><button class="primary-btn" type="submit" value="Submit">SIGNUP</button></td>
+                        </tr>
+                    </table>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

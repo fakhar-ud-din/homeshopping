@@ -1,0 +1,431 @@
+{% load static %}
+<html>
+<header>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+        {{ title|default:'HomeShopping.pk' }}
+        {% endblock %}
+    </title>
+    <link href="{% static 'main.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
+    <link type="text/css" rel="stylesheet" href="{% static 'slick.css' %}" />
+    <link type="text/css" rel="stylesheet" href="{% static 'slick-theme.css' %}" />
+    <link type="text/css" rel="stylesheet" href="{% static 'nouislider.min.css' %}" />
+    <link type="text/css" rel="stylesheet" href="{% static 'style.css' %}" />
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"
+        type='text/css'>
+</header>
+
+<body>
+    <header>
+        <!-- TOP HEADER -->
+        <div id="top-header">
+            <div class="container">
+                <ul class="header-links pull-left">
+                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                </ul>
+                <ul class="header-links pull-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#" id="username">{{ user.username }}</a></li>
+                    <li class="action-label"> | </li>
+                    <li><a href="{% url 'logout' %}">
+                            <h5 class="action-label1">LOGOUT</h5>
+                        </a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">
+                            <h6 class="action-label1">LOGIN</h6>
+                        </a></li>
+                    <li class="action-label"> | </li>
+                    <li><a href="{% url 'signup' %}">
+                            <h5 class="action-label2">SIGNUP</h5>
+                        </a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <!-- /TOP HEADER -->
+        <!-- MAIN HEADER -->
+        <div id="header">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <!-- LOGO -->
+                    <div class="col-md-3">
+                        <div class="header-logo">
+                            <a href="{% url 'home' %}" class="logo">
+                                <img src="{% static 'website-logo.png' %}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /LOGO -->
+                    <!-- SEARCH BAR -->
+                    <div class="col-md-6">
+                        <div class="header-search">
+                            <form id="searchform" action="{% url 'search' %}" method="get">
+                                <input id="search-input" name="search-field" class="input" placeholder="Search here">
+                                <button type="submit" class="search-btn" onclick="myFunction()">Search</button>
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /SEARCH BAR -->
+                    <div class="col-md-3">
+                        <div class="header-ctn">
+                            <!-- Wishlist -->
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa fa-heart-o"></i>
+                                    <span>Your Wishlist</span>
+                                    <div class="qty">
+                                        {% if wishlist_count %}
+                                        {{ wishlist_count }}
+                                        {% else %}
+                                        0
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <div class="cart-dropdown">
+                                    <div class="cart-list">
+                                        {% if wishlist_count %}
+                                        {% for item in wishlist_items %}
+                                        <div class="product-widget">
+                                            <div class="product-img">
+                                                <img src="{{ item.pictures.url }}" alt="">
+                                            </div>
+                                            <div class="product-body">
+                                                <h3 class="product-name-cart"><a href="#">{{ item.name }}</a></h3>
+                                                <h4 class="product-price">{{ item.price }}
+                                                </h4>
+                                            </div>
+                                            <button value="{{item.name}}" class="delete"
+                                                onclick="delete_from_wishlist(this)"><i
+                                                    class="fa fa-close"></i></button>
+                                        </div>
+                                        {% endfor %}
+                                        {% else %}
+                                        <p>No Items. Press <span class="fa fa-heart-o"></span> to add Items !<br>
+                                            Still Can't Add Items?<br>
+                                            Login !</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="qty-update">
+                                        <h6 id="removed-from-wishlist"></h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Wishlist -->
+
+                            <!-- Cart -->
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Your Cart</span>
+                                    <div class="qty">
+                                        {% if cart_count %}
+                                        {{ cart_count }}
+                                        {% else %}
+                                        0
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <div class="cart-dropdown">
+                                    <div class="cart-list">
+                                        {% if cart_count %}
+                                        {% for each_item in  items_in_cart %}
+                                        {% for item in cart_items %}
+                                        {% if each_item.item_name == item.name %}
+                                        <div class="product-widget">
+                                            <div class="product-img">
+                                                <img src="{{ item.pictures.url }}" alt="">
+                                            </div>
+                                            <div class="product-body">
+                                                <h3 class="product-name-cart"><a href="#">{{ item.name }}</a></h3>
+                                                <h4 class="product-price"><span
+                                                        class="qty">{{ each_item.quantity }}x</span>{{ item.price }}
+                                                </h4>
+                                            </div>
+                                            <button value="{{item.name}}" class="delete"
+                                                onclick="delete_from_cart(this)"><i class="fa fa-close"></i></button>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <p>No Items. Press <span>"Add to Cart"</span> to add Items !<br>
+                                            Still Can't Add Items?<br>
+                                            Login !
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="qty-update">
+                                        <h6 id="removed-from-cart"></h6>
+                                    </div>
+                                    <div class="cart-summary">
+                                        <small>{{ cart_count }} Item(s) selected</small>
+                                        <h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
+                                    </div>
+                                    <div class="cart-btns">
+                                        <a href="#">View Cart</a>
+                                        {% if cart_count %}
+                                        <a href="{% url 'checkout' %}">Checkout <i
+                                                class="fa fa-arrow-circle-right"></i></a>
+                                        {% else %}
+                                        <a href="#">Add Items <i class="fa fa-arrow-circle-right"></i></a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Cart -->
+                        </div>
+                    </div>\
+
+                    <!-- row -->
+                </div>
+                <!-- container -->
+            </div>
+        </div>
+        <!-- /MAIN HEADER -->
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav id="navigation">
+        <!-- container -->
+        <div class="container">
+            <!-- responsive-nav -->
+            <div id="responsive-nav">
+                <!-- NAV -->
+                <ul class="main-nav nav navbar-nav">
+                    <li class="active"><a href="{% url 'home' %}">Home</a></li>
+                    {% block list_catogaries %}{% endblock %}
+                </ul>
+                <!-- /NAV -->
+            </div>
+            <!-- /responsive-nav -->
+        </div>
+        <!-- /container -->
+    </nav>
+    <!-- /NAVIGATION -->
+
+    <!---------------------------------------------LOGIC GOES HEREEEEEE !!!!!!!!!!!!!!! --------------------------------------------------->
+    <div class="main-block">
+        {% block content %} {% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <!-- top footer -->
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+                            <p>Homeshopping is the one of the largest e-commerce website in the industry and is counted
+                                amongst the top two largest online shopping websites in the country, which successfully
+                                completed its 10 years in July 2018.
+
+                                Homeshopping is a homegrown marketplace which operates on an Omni-channel approach:
+                                apart from the online medium, the company has brick-and-mortar retail experience centers
+                                in Pakistan.
+                            </p>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fa fa-map-marker"></i>Suite # 1003, Al Najeebi Towers, Aga
+                                        Khan III RD, Saddar, Karachi.</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i>+92-111-476-725</a></li>
+                                <li><a href="#"><i class="fa fa-envelope-o"></i>fakharudin99@gmail.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="clearfix visible-xs"></div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Information</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Service</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">Help</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /top footer -->
+
+        <!-- bottom footer -->
+        <div id="bottom-footer" class="section">
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <ul class="footer-payments">
+                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                        </ul>
+                        <span class="copyright">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                            HomeShopping replica is made by Fakhar ud din using <a href="https://colorlib.com"
+                                target="_blank">Colorlib</a>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /bottom footer -->
+    </footer>
+    <!-- /FOOTER -->
+
+
+    <script src="{% static 'jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script src="{% static 'slick.min.js' %}"></script>
+    <script src="{% static 'jquery.zoom.min.js' %}"></script>
+    <script src="{% static 'main.js' %}"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script>
+        function add_item_to_cart_function(element) {
+            if (element.value != "added") {
+                if (document.getElementById("qty")) {
+                    var qty = document.getElementById("qty").value;
+                    var max_qty = document.getElementById("qty").max;
+                    qty = parseInt(qty, 10);
+                    max_qty = parseInt(max_qty, 10);
+                    if (qty <= max_qty) {
+                        $.ajax({
+                            type: "GET",
+                            url: "/home/",
+                            data: {
+                                'username': $('#username').text(),
+                                'item': element.value,
+                                'qty': qty,
+                                'type': "add-to-cart",
+                            },
+                            dataType: 'text',
+                            success: function (data) {
+                                element.value = "added"
+                                element.innerHTML = "<i class='fa fa-shopping-cart'></i> ADDED!";
+                                document.getElementById("qty-message").innerHTML = "Item Added to Cart!"
+
+                            }
+                        });
+                    }
+                    else {
+                        document.getElementById("qty-errors").innerHTML = "Quantity Not Available in Stock!"
+                    }
+                }
+                else {
+                    var qty = 1;
+                    $.ajax({
+                        type: "GET",
+                        url: "/home/",
+                        data: {
+                            'username': $('#username').text(),
+                            'item': element.value,
+                            'qty': qty,
+                            'type': "add-to-cart",
+                        },
+                        dataType: 'text',
+                        success: function (data) {
+                            element.value = "added"
+                            element.innerHTML = "<i class='fa fa-shopping-cart'></i> ADDED!";
+                            document.getElementById("qty-message").innerHTML = "Item Added to Cart!"
+
+                        }
+                    });
+                }
+
+
+            }
+            else {
+                document.getElementById("qty-message").innerHTML = ""
+                document.getElementById("qty-errors").innerHTML = "Item Already in Cart!"
+            }
+        }
+        function add_item_to_wishlist(element) {
+            if (element.value != "added") {
+                $.ajax({
+                    type: "GET",
+                    url: "/home/",
+                    data: {
+                        'item': element.value,
+                        'type': "add-to-wishlist"
+                    },
+                    dataType: 'text',
+                    success: function (data) {
+                        element.value = "added"
+                        document.getElementById("qty-message").innerHTML = "Item Added to Wishlist!"
+                    }
+                });
+            }
+            else {
+                document.getElementById("qty-message").innerHTML = ""
+                document.getElementById("qty-errors").innerHTML = "Item Already in Wishlist!"
+
+            }
+        }
+        function delete_from_cart(element) {
+            $.ajax({
+                type: "GET",
+                url: "/home/",
+                data: {
+                    'item': element.value,
+                    'type': "delete-from-cart"
+                },
+                dataType: 'text',
+                success: function (data) {
+                    document.getElementById("removed-from-cart").innerHTML = element.value + " Removed! <br> Refresh the Page."
+                }
+            });
+        }
+        function delete_from_wishlist(element) {
+            $.ajax({
+                type: "GET",
+                url: "/home/",
+                data: {
+                    'item': element.value,
+                    'type': "delete-from-wishlist"
+                },
+                dataType: 'text',
+                success: function (data) {
+                    document.getElementById("removed-from-wishlist").innerHTML = element.value + " Removed! <br> Refresh the Page."
+                }
+            });
+        }
+    </script>
+</body>
+
+
+</html>

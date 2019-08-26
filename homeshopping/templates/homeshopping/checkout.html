@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block list_catogaries %}
+{% for category in categories %}
+<li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
+{%  endfor %}
+{% endblock %}
+
+{% block header-content %}
+<div class="col-md-3">
+	<div class="header-ctn">
+		<!-- Wishlist -->
+		<div>
+			<a href="#">
+				<i class="fa fa-heart-o"></i>
+				<span>Your Wishlist</span>
+				<div class="qty">
+					{% if wishlist_count %}
+					{{ wishlist_count }}
+					{% else %}
+					0
+					{% endif %}
+				</div>
+			</a>
+		</div>
+		<!-- /Wishlist -->
+
+		<!-- Cart -->
+		<div class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+				<i class="fa fa-shopping-cart"></i>
+				<span>Your Cart</span>
+				<div class="qty">
+					{% if cart_count %}
+					{{ cart_count }}
+					{% else %}
+					0
+					{% endif %}
+				</div>
+			</a>
+			<div class="cart-dropdown">
+				<div class="cart-list">
+					{% for item in cart_items %}
+					<div class="product-widget">
+						<div class="product-img">
+							<img src="{{ item.pictures.url }}" alt="">
+						</div>
+						<div class="product-body">
+							<h3 class="product-name"><a href="#">{{ item.name }}</a></h3>
+							<h4 class="product-price"><span class="qty">1x</span>{{ item.price }}</h4>
+						</div>
+						<button value="{{item.name}}" class="delete" onclick="delete_from_cart(this)"><i
+								class="fa fa-close"></i></button>
+					</div>
+					{% endfor %}
+				</div>
+				<div class="cart-summary">
+					<small>{{ cart_count }} Item(s) selected</small>
+					<h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
+				</div>
+				<div class="cart-btns">
+					<a href="#">View Cart</a>
+					<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- /Cart -->
+	</div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<div class="col-md-12">
+				<h3 class="breadcrumb-header">Checkout</h3>
+				<ul class="breadcrumb-tree">
+					<li><a href="{% url 'home' %}">Home</a></li>
+					<li class="active">Checkout</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- SECTION -->
+<div class="section-checkout">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<form method="post" action="">
+				{% csrf_token %}
+				<div class="col-md-7">
+					<!-- Billing Details -->
+					<div class="billing-details">
+						<div class="section-title">
+							<h3 class="title">Billing address</h3>
+						</div>
+						<input type="hidden" id="cart_items" name="cart_items">
+						<div class="form-group">
+							<input class="input" type="text" name="first-name" placeholder="First Name" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="text" name="last-name" placeholder="Last Name" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="email" name="email" placeholder="Email" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="text" name="address" placeholder="Address" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="text" name="city" placeholder="City" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="text" name="country" placeholder="Country" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="text" name="zip_code" placeholder="ZIP Code" required>
+						</div>
+						<div class="form-group">
+							<input class="input" type="tel" name="phone" placeholder="Telephone" required>
+						</div>
+						<div class="form-group">
+							<div class="input-checkbox">
+								{% ifnotequal request.user.username '' %}
+								<input type="hidden" id="logged-in">
+								{% else %}
+								<a href="{% url 'signup' %}">Create Account?</a>
+								<input type="hidden" id="logged-out">
+								{% endifnotequal %}
+							</div>
+						</div>
+					</div>
+					<!-- /Billing Details -->
+
+				</div>
+
+				<!-- Order Details -->
+				<div class="col-md-5 order-details">
+					<div class="section-title text-center">
+						<h3 class="title">Your Order</h3>
+					</div>
+					<div class="order-summary">
+						<div class="order-col">
+							<div><strong>PRODUCT</strong></div>
+							<div><strong>TOTAL</strong></div>
+						</div>
+						<div class="order-products">
+							{% for each_item in  items_in_cart %}
+							{% for item in cart_items %}
+							{% if each_item.item_name == item.name %}
+							<div class="order-col">
+								<div>{{each_item.quantity}}x {{ item.name }}</div>
+								<div>Rs {{ item.price }} /-</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+							{% endfor %}
+						</div>
+						<div class="order-col">
+							<div><strong>TOTAL</strong></div>
+							<div><strong class="order-total">Rs {{ subtotal_cart }} /-</strong></div>
+						</div>
+					</div>
+					<div class="payment-method">
+						<div class="input-radio">
+							<input type="radio" name="payment" id="payment-1" required>
+							<label for="payment-1">
+								<span></span>
+								Direct Bank Transfer
+							</label>
+							<div class="caption">
+								<p>Deposit the Amount in any of the following Bank Accounts:<br>
+									Bank Al-Falah : 123-xxxxxxxxxxx-00<br>
+									Bank Al-Habib : 127-xxxxxxxxxxx-01<br>
+								</p>
+							</div>
+						</div>
+						<div class="input-radio">
+							<input type="radio" name="payment" id="payment-2">
+							<label for="payment-2">
+								<span></span>
+								Cash on Delivery
+							</label>
+							<div class="caption">
+								<p>Hand over the amount to the courier once the product has been delivered.</p>
+							</div>
+						</div>
+					</div>
+					<div>
+						<strong id="show-errors"></strong>
+					</div>
+					<input type="hidden" id="payment_method" name="payment_method">
+					<button type="submit" onclick="assign_payment_method()" class="primary-btn order-submit">Place
+						order</button>
+				</div>
+				<!-- /Order Details -->
+			</form>
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+</div>
+<!-- /SECTION -->
+<script>
+	function assign_payment_method() {
+		input_box = document.getElementById("payment_method");
+		method_a = document.getElementById("payment-1");
+		method_b = document.getElementById("payment-2");
+		if (method_a.checked)
+			input_box.value = "Bank Transfer"
+		else if (method_b.checked)
+			input_box.value = "COD"
+		else
+			document.getElementById("show-errors").innerHTML = "Select a Payement Method!"
+	}
+</script>
+{% endblock %}

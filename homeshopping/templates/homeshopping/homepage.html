@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block list_catogaries %}
+{% for category in categories %}
+<li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
+{%  endfor %}
+{% endblock %}
+
+{% block content %}
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+
+                    <div class="item active">
+                        <img src="{% static 'samsung.jpg' %}" alt="">
+                    </div>
+                    <div class="item">
+                        <img src="{% static 'alfalah.jpg' %}" alt="">
+                    </div>
+                    <div class="item">
+                        <img src="{% static 'stationary.jpg' %}" alt="">
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+
+<!----------------------------------PRODUCTS------------------------------------------>
+
+<!-- SECTION -->
+<div class="section">
+    <div class="sidebar">
+        <h3>Brands</h3>
+        <ul>
+            {% for subcategory in subcategories %}
+            <li class="sidebar-content"><a href="{% url 'brands' subcategory.name %}">{{ subcategory.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% for category in categories %}
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12" id="search-results"></div>
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h3 class="title">{{ category }}</h3>
+                    <div class="horizontal-line"></div>
+                    <div class="section-nav">
+                        <ul class="section-tab-nav tab-nav">
+                            {% for subcategory in subcategories %}
+                            {% if subcategory.category == category %}
+                            <li><a href="{% url 'brands' subcategory.name %}">{{ subcategory.name }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /section title -->
+            <!-- Products tab & slick -->
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="products-tabs">
+                        <!-- tab -->
+                        <div class="tab-pane active">
+                            <div class="products-slick" data-nav="#slick-nav-1">
+                                <!-- product -->
+                                {% for product in products %}
+                                {% if category == product.category %}
+                                <div class="product">
+                                    <div class="product-img">
+                                        <img src=" {{ product.pictures.url }} " alt="">
+                                        <div class="product-label">
+                                            <span class="sale">-30%</span>
+                                            <span class="new">NEW</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-body">
+                                        <p class="product-category">{{ product.subcategory }}</p>
+                                        <h3 class="product-name-h"><a href="{% url 'item' product.name %}"
+                                                id="product-name">{{ product.name }}</a></h3>
+                                        <h4 class="product-price">Rs {{ product.price }} /-
+                                        </h4>
+                                        <div class="product-description">
+                                            <p class="description">{{ product.short_description }}</p>
+                                        </div>
+                                        <div class="product-rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="qty-update">
+                                            <h6 id="qty-errors"></h6>
+                                            <h6 id="qty-message"></h6>
+                                        </div>
+                                        <div class="product-btns">
+                                            <button value="{{ product.name }}" onclick="add_item_to_wishlist(this)"
+                                                class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                    class="tooltipp">add to wishlist</span></button>
+                                            <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                    class="tooltipp">add to compare</span></button>
+                                            <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                    class="tooltipp">quick
+                                                    view</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="add-to-cart">
+                                        {% if product.is_available %}
+                                        <button type="submit" value="{{product.name}}"
+                                            onclick="add_item_to_cart_function(this)" class="add-to-cart-btn"><i
+                                                class="fa fa-shopping-cart"></i> add to
+                                            cart</button>
+                                        {% else %}
+                                        <button class="add-to-cart-btn out-of-stock"
+                                            style="background-color: #be332a"><i class="fa fa-shopping-cart"></i> Out of
+                                            Stock</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+
+                                <!-- /product -->
+                            </div>
+                        </div>
+                        <!-- /tab -->
+                    </div>
+                </div>
+            </div>
+            <!-- Products tab & slick -->
+        </div>
+        <!-- /row -->
+    </div>
+    {% endfor %}
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+<!------------------------------------------------////////////PRODUCTS---------------------------------->
+{% endblock %}
