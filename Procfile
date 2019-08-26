@@ -1,0 +1,1 @@
+web: gunicorn homeshopping.wsgi --log-file -

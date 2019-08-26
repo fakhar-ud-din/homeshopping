@@ -121,6 +121,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'homeshopping/static'),
                     os.path.join(BASE_DIR, 'homeshopping/static/css'),
@@ -128,6 +131,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'homeshopping/static'),
                     os.path.join(BASE_DIR, 'homeshopping/static/products'),
                     os.path.join(BASE_DIR, 'homeshopping/static/images'),
                     ]
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -140,3 +145,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'fakharudin99@gmail.com'
 EMAIL_HOST_PASSWORD = 'fakhar_efyudi99'
 EMAIL_PORT = 587
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
