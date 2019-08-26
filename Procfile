@@ -1,1 +1,1 @@
-web: gunicorn homeshopping.wsgi --log-file -
+web: gunicorn homeshopping.wsgi --log-file=-
