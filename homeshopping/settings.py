@@ -145,11 +145,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'fakharudin99@gmail.com'
 EMAIL_HOST_PASSWORD = 'fakhar_efyudi99'
 EMAIL_PORT = 587
-
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
