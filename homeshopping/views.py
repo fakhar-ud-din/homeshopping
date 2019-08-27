@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
+import stripe
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class Search(TemplateView):
@@ -52,12 +56,13 @@ class Checkout(TemplateView):
     categories.sort(key=lambda x: x.name.lower())
     subcategories = list(set(subcategories))
     subcategories.sort(key=lambda x: x.name.lower())
-
     arguments = {'products': products,
                  'categories': categories, 'subcategories': subcategories}
 
     def get(self, request, *args, **kwargs):
         username = request.user
+        key = settings.STRIPE_PUBLISHABLE_KEY
+        self.arguments['key'] = key
         if username != "AnonymousUser":
             cart_count = 0
             wishlist_count = 0
@@ -69,6 +74,11 @@ class Checkout(TemplateView):
     def post(self, request, *args, **kwargs):
         username = request.user.username
         if username != "":
+            cart_count = 0
+            wishlist_count = 0
+            get_cart_items(self.arguments, username,
+                           cart_count, wishlist_count)
+
             items_in_cart = Cart.objects.filter(
                 username=username)
             user = User.objects.get(username=username)
@@ -90,13 +100,21 @@ class Checkout(TemplateView):
                                       item=product, date_placed=date.today(), payment_type=payment_method)
                 order_place.save()
             Cart.objects.filter(username=username).delete()
+            if payment_method == 'stripe':
+                description = f"Order ID : {str(order.id)}"
+                charge = stripe.Charge.create(
+                    amount=self.arguments['subtotal_cart']*100,
+                    currency='usd',
+                    description=description,
+                    source=request.POST['stripeToken']
+                )
 
             subject = "Order Recieved - HomeShopping"
             message = """Thank You for shopping with Homeshopping.pk\n
-                        Your Tacking ID is : """ + str(order.id) + """\nWe hope you had a great time shopping with us !"""
-
-            send_mail(subject, message, 'fakharudin99@gmail.com', [email])
-
+                        Your Tacking ID is : """ + str(order.id) + """\n
+                        We hope you had a great time shopping with us !"""
+            send_mail(subject, message,
+                      'homeshopping.shoponline@gmail.com', [email])
             return render(request, 'thank-you.html', {"order_id": order.id, "email": email})
         else:
             return HttpResponseRedirect('/accounts/signup/')

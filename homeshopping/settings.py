@@ -150,3 +150,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'homeshopping.shoponline@gmail.com'
 EMAIL_HOST_PASSWORD = 'fakhar_fud99'
 EMAIL_PORT = 587
+
+STRIPE_SECRET_KEY = 'sk_test_yIyl34ZRaUzTYEyqk8XTb6Yf00WiLozC71'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_aW6XTUy6q0GcxrmdsngfymKi00qXoAir7J'

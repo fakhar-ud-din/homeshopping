@@ -66,12 +66,12 @@ class Reviews(models.Model):
 class Order(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
+    last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50, blank=False)
     address = models.CharField(max_length=100, blank=False)
     city = models.CharField(max_length=50, blank=False)
     country = models.CharField(max_length=50, blank=False)
-    zip_code = models.IntegerField(blank=False)
+    zip_code = models.IntegerField()
     phone = models.IntegerField(blank=False)
 
     def __str__(self):

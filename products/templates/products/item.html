@@ -70,7 +70,7 @@
 							review</a>
 					</div>
 					<div>
-						<h3 class="product-price">Rs {{ product.price }} /-</h3>
+						<h3 class="product-price">{{ product.price }} /-</h3>
 						{% if product.is_available > 0 %}
 						<span class="product-available active">In Stock</span>
 						{% else %}
@@ -279,7 +279,7 @@
 						<p class="product-category">Category</p>
 						<h3 class="product-name"><a href="{% url 'item' each_product.name%}">{{ each_product.name }}</a>
 						</h3>
-						<h4 class="product-price">Rs {{ each_product.price }} /-</h4>
+						<h4 class="product-price">$ {{ each_product.price }}</h4>
 						<div class="product-description">
 							<p class="description">{{ each_product.short_description }}</p>
 						</div>
@@ -297,7 +297,15 @@
 						</div>
 					</div>
 					<div class="add-to-cart">
-						<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+						{% if each_product.is_available > 0 %}
+						<button type="submit" value="{{ product.name }}" onclick="add_item_to_cart_function(this)"
+							class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+							cart</button>
+						{% else %}
+						<button class="out-of-stock add-to-cart-btn " style="background-color: #be332a"><i
+								class="fa fa-shopping-cart" style="color: #FFF"></i> Out of
+							Stock</button>
+						{% endif %}
 					</div>
 				</div>
 			</div>

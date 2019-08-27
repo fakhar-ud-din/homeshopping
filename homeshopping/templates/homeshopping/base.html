@@ -103,7 +103,7 @@
                                             <div class="product-body">
                                                 <h3 class="product-name-cart"><a
                                                         href="{% url 'item' item.name %}">{{ item.name }}</a></h3>
-                                                <h4 class="product-price">{{ item.price }}
+                                                <h4 class="product-price"> $ {{ item.price }}
                                                 </h4>
                                             </div>
                                             <button value="{{item.name}}" class="delete"
@@ -152,7 +152,7 @@
                                                 <h3 class="product-name-cart"><a
                                                         href="{% url 'item' item.name %}">{{ item.name }}</a></h3>
                                                 <h4 class="product-price"><span
-                                                        class="qty">{{ each_item.quantity }}x</span>{{ item.price }}
+                                                        class="qty">{{ each_item.quantity }}x</span> $ {{ item.price }}
                                                 </h4>
                                             </div>
                                             <button value="{{item.name}}" class="delete"
@@ -173,7 +173,7 @@
                                     </div>
                                     <div class="cart-summary">
                                         <small>{{ cart_count }} Item(s) selected</small>
-                                        <h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
+                                        <h5>SUBTOTAL : $ {{ subtotal_cart }} </h5>
                                     </div>
                                     <div class="cart-btns">
                                         {% if cart_count %}

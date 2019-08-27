@@ -143,6 +143,7 @@ ul, ol {
   width: 100%;
 }
 
+
 textarea.input {
   padding: 15px;
   min-height: 90px;
@@ -307,9 +308,19 @@ textarea.input {
   -webkit-transition: 0.3s max-height;
   transition: 0.3s max-height;
 }
+.caption2{
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: 0.3s max-height;
+  transition: 0.3s max-height;
+}
 
 .input-radio input[type="radio"]:checked~.caption, .input-checkbox input[type="checkbox"]:checked~.caption {
   max-height: 800px;
+}
+
+input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 {
+  max-height: 1200px;
 }
 
 /*----------------------------*\
@@ -1194,18 +1205,11 @@ textarea.input {
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
 }
-.product-details .add-to-cart .out-of-stock>i {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 40px;
-  height: 40px;
-  line-height: 38px;
-  color: #FFF;
-  opacity: 0;
-  visibility: hidden;
+.field-error {
+  
+  border : 1px solid #e2382c;
+  opacity: 90%;
 }
-
 .product-details .add-to-cart .out-of-stock>i {
   position: absolute;
   left: 0;
@@ -1580,6 +1584,11 @@ textarea.input {
 /*----------------sectionsectionsectionsection------------*\
 	Product view
 \*----------------------------*/
+.stripe-order{
+  top: 100%;
+  margin-bottom: -100px;
+}
+
 
 .main-block .section {
   width: 80%;
