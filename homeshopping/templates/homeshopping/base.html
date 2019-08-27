@@ -27,9 +27,9 @@
         <div id="top-header">
             <div class="container">
                 <ul class="header-links pull-left">
-                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                    <li><a href="#"><i class="fa fa-phone"></i> +92-301-xxxxxxx</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> homeshopping.shoponline@gmail.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> Saddar, Karachi</a></li>
                 </ul>
                 <ul class="header-links pull-right">
                     {% if user.is_authenticated %}
@@ -71,13 +71,13 @@
                         <div class="header-search">
                             <form id="searchform" action="{% url 'search' %}" method="get">
                                 <input id="search-input" name="search-field" class="input" placeholder="Search here">
-                                <button type="submit" class="search-btn" onclick="myFunction()">Search</button>
+                                <button type="submit" class="search-btn">Search</button>
                                 {% csrf_token %}
                             </form>
                         </div>
                     </div>
                     <!-- /SEARCH BAR -->
-                    <div class="col-md-3">
+                    <div class=" col-md-3">
                         <div class="header-ctn">
                             <!-- Wishlist -->
                             <div class="dropdown">
@@ -101,7 +101,8 @@
                                                 <img src="{{ item.pictures.url }}" alt="">
                                             </div>
                                             <div class="product-body">
-                                                <h3 class="product-name-cart"><a href="#">{{ item.name }}</a></h3>
+                                                <h3 class="product-name-cart"><a
+                                                        href="{% url 'item' item.name %}">{{ item.name }}</a></h3>
                                                 <h4 class="product-price">{{ item.price }}
                                                 </h4>
                                             </div>
@@ -111,7 +112,8 @@
                                         </div>
                                         {% endfor %}
                                         {% else %}
-                                        <p>No Items. Press <span class="fa fa-heart-o"></span> to add Items !<br>
+                                        <p>No Items. Press <span class="fa fa-heart-o"></span> to add Items
+                                            !<br>
                                             Still Can't Add Items?<br>
                                             Login !</p>
                                         {% endif %}
@@ -147,7 +149,8 @@
                                                 <img src="{{ item.pictures.url }}" alt="">
                                             </div>
                                             <div class="product-body">
-                                                <h3 class="product-name-cart"><a href="#">{{ item.name }}</a></h3>
+                                                <h3 class="product-name-cart"><a
+                                                        href="{% url 'item' item.name %}">{{ item.name }}</a></h3>
                                                 <h4 class="product-price"><span
                                                         class="qty">{{ each_item.quantity }}x</span>{{ item.price }}
                                                 </h4>
@@ -173,7 +176,6 @@
                                         <h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">View Cart</a>
                                         {% if cart_count %}
                                         <a href="{% url 'checkout' %}">Checkout <i
                                                 class="fa fa-arrow-circle-right"></i></a>
@@ -366,6 +368,7 @@
                         success: function (data) {
                             element.value = "added"
                             element.innerHTML = "<i class='fa fa-shopping-cart'></i> ADDED!";
+                            document.getElementById("qty-errors").innerHTML = ""
                             document.getElementById("qty-message").innerHTML = "Item Added to Cart!"
 
                         }
@@ -392,6 +395,7 @@
                     success: function (data) {
                         element.value = "added"
                         document.getElementById("qty-message").innerHTML = "Item Added to Wishlist!"
+                        document.getElementById("qty-errors").innerHTML = ""
                     }
                 });
             }

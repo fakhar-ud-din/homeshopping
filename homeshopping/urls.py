@@ -30,7 +30,6 @@ urlpatterns = [
     path('home/', views.Homepage.as_view(), name='home'),
     path('checkout/', views.Checkout.as_view(), name='checkout'),
     path('search/', views.Search.as_view(), name='search'),
-    path('/', views.Homepage.as_view()),
     path('', views.Homepage.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

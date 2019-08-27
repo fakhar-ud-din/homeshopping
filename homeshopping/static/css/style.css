@@ -640,8 +640,8 @@ textarea.input {
 }
 
 .cart-dropdown .cart-btns>a {
+  width: 100%;
   display: inline-block;
-  width: calc(50% - 0px);
   padding: 12px;
   background-color: #4ba029;
   color: #FFF;
@@ -651,10 +651,6 @@ textarea.input {
   transition: 0.2s all;
 }
 
-.cart-dropdown .cart-btns>a:first-child {
-  margin-right: -4px;
-  background-color: #1e1f29;
-}
 
 .cart-dropdown .cart-btns>a:hover {
   opacity: 0.9;
@@ -1185,6 +1181,42 @@ textarea.input {
   transition: 0.2s all;
 }
 
+.product .add-to-cart .out-of-stock {
+  position: relative;
+  border: 2px solid transparent;
+  height: 40px;
+  padding: 0 30px;
+  background-color: #FFF;
+  color: #FFF;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 40px;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+}
+.product-details .add-to-cart .out-of-stock>i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 38px;
+  color: #FFF;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.product-details .add-to-cart .out-of-stock>i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 38px;
+  color: #FFF;
+  opacity: 0;
+  visibility: hidden;
+}
 .product .add-to-cart .add-to-cart-btn>i {
   position: absolute;
   left: 0;
@@ -1193,18 +1225,6 @@ textarea.input {
   height: 40px;
   line-height: 38px;
   color: #4ba029;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.product .add-to-cart .out-of-stock>i {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 40px;
-  height: 40px;
-  line-height: 38px;
-  color: #FFF;
   opacity: 0;
   visibility: hidden;
 }
@@ -1224,6 +1244,23 @@ textarea.input {
 .product .add-to-cart .add-to-cart-btn:hover>i {
   opacity: 1;
   visibility: visible;
+}
+
+.product .add-to-cart .out-of-stock:hover>i {
+  opacity: 1;
+  visibility: visible;
+}
+
+.related-products-tab {
+  margin: 5%;
+
+}
+
+.no-products-found{
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding-top: 5%;
 }
 
 /*----------------------------*\
@@ -1732,6 +1769,18 @@ textarea.input {
   visibility: hidden;
 }
 
+.product-details .add-to-cart .out-of-stock>i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 38px;
+  color: #FFF;
+  opacity: 0;
+  visibility: hidden;
+}
+
 .product-details .add-to-cart .add-to-cart-btn:hover {
   background-color: #FFF;
   color: #4ba029;
@@ -1739,7 +1788,18 @@ textarea.input {
   padding: 0px 30px 0px 50px;
 }
 
+.product-details .add-to-cart .out-of-stock:hover {
+  background-color: #FFF;
+  color: #FFF;
+  border-color: #000;
+  padding: 0px 30px 0px 50px;
+}
+
 .product-details .add-to-cart .add-to-cart-btn:hover>i {
+  opacity: 1;
+  visibility: visible;
+}
+.product-details .add-to-cart .out-of-stock:hover>i {
   opacity: 1;
   visibility: visible;
 }

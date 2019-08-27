@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %} Home Shopping - Search Results {% endblock %}
+
 {% block list_catogaries %}
 {% for category in categories %}
 <li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
@@ -105,10 +107,17 @@
                                         </div>
                                     </div>
                                     <div class="add-to-cart">
+                                        {% if product.is_available > 0 %}
                                         <button type="submit" value="{{product.name}}"
                                             onclick="add_item_to_cart_function(this)" class="add-to-cart-btn"><i
                                                 class="fa fa-shopping-cart"></i> add to
                                             cart</button>
+                                        {% else %}
+                                        <button class="out-of-stock add-to-cart-btn "
+                                            style="background-color: #be332a"><i class="fa fa-shopping-cart"
+                                                style="color: #FFF"></i> Out of
+                                            Stock</button>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 {% endfor %}

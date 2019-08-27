@@ -7,68 +7,6 @@
 <li><a href="{% url 'category' category%}">{{ category.name }}</a></li>
 {%  endfor %}
 {% endblock %}
-{% block header-content %}
-<div class="col-md-3">
-	<div class="header-ctn">
-		<!-- Wishlist -->
-		<div>
-			<a href="#">
-				<i class="fa fa-heart-o"></i>
-				<span>Your Wishlist</span>
-				<div class="qty">
-					{% if wishlist_count %}
-					{{ wishlist_count }}
-					{% else %}
-					0
-					{% endif %}
-				</div>
-			</a>
-		</div>
-		<!-- /Wishlist -->
-
-		<!-- Cart -->
-		<div class="dropdown">
-			<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-				<i class="fa fa-shopping-cart"></i>
-				<span>Your Cart</span>
-				<div class="qty">
-					{% if cart_count %}
-					{{ cart_count }}
-					{% else %}
-					0
-					{% endif %}
-				</div>
-			</a>
-			<div class="cart-dropdown">
-				<div class="cart-list">
-					{% for item in cart_items %}
-					<div class="product-widget">
-						<div class="product-img">
-							<img src="{{ item.pictures.url }}" alt="">
-						</div>
-						<div class="product-body">
-							<h3 class="product-name"><a href="#">{{ item.name }}</a></h3>
-							<h4 class="product-price"><span class="qty">1x</span>{{ item.price }}</h4>
-						</div>
-						<button value="{{item.name}}" class="delete" onclick="delete_from_cart(this)"><i
-								class="fa fa-close"></i></button>
-					</div>
-					{% endfor %}
-				</div>
-				<div class="cart-summary">
-					<small>{{ cart_count }} Item(s) selected</small>
-					<h5>SUBTOTAL: {{ subtotal_cart }} /-</h5>
-				</div>
-				<div class="cart-btns">
-					<a href="#">View Cart</a>
-					<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-				</div>
-			</div>
-		</div>
-		<!-- /Cart -->
-	</div>
-</div>
-{% endblock %}
 
 {% block content %}
 <!-- BREADCRUMB -->
@@ -155,9 +93,15 @@
 								<span class="qty-down">-</span>
 							</div>
 						</div>
-						<button button type="submit" value="{{product.name}}" onclick="add_item_to_cart_function(this)"
+						{% if product.is_available > 0 %}
+						<button type="submit" value="{{product.name}}" onclick="add_item_to_cart_function(this)"
 							class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
 							cart</button>
+						{% else %}
+						<button class="add-to-cart-btn out-of-stock" style="background-color: #be332a"><i
+								class="fa fa-shopping-cart"></i> Out of
+							Stock</button>
+						{% endif %}
 					</div>
 					<div class="product-btns">
 						<div class="item-btn">
@@ -318,6 +262,7 @@
 					<h3 class="title">Related Products</h3>
 				</div>
 			</div>
+			{% 	if relevent_products %}
 			{% for each_product in relevent_products %}
 			<!-- product -->
 			<div class="col-md-3 col-xs-6">
@@ -357,6 +302,11 @@
 				</div>
 			</div>
 			{% endfor %}
+			{% else %}
+			<div class="related-products-tab">
+				<h5 class="no-products-found">No Related Products Found!</h5>
+			</div>
+			{% endif %}
 			<!-- /product -->
 		</div>
 		<!-- /row -->

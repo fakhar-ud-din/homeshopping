@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<body onload="myFunction()">
+<body onload="startTimer()">
     <section>
         <div class="container">
             <div class="row">
@@ -33,7 +33,7 @@
         </div>
     </section>
     <script>
-        function myFunction() {
+        function startTimer() {
             $(document).ready(function () {
                 var number = 10;
                 var interval = setInterval(function () {

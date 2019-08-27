@@ -45,44 +45,47 @@ class CategoryClass(TemplateView):
 
 class ItemClass(TemplateView):
 
+    title = None
+
     def get(self, request, *args, **kwargs):
         arguments_returned = get_cart_wishlist(request)
-        title = kwargs['name']
-        product = Product.objects.get(name=title)
+        self.title = kwargs['name']
+        product = Product.objects.get(name=self.title)
         product_category = Category.objects.get(name=product.category)
         categories = Category.objects.all()
-        products = Product.objects.filter(category=product_category)
-        reviews = Reviews.objects.filter(item=title)
+        products = Product.objects.filter(
+            category=product_category).exclude(name=self.title)
+        reviews = Reviews.objects.filter(item=self.title)
         count_reviews = len(reviews)
 
         categories = list(set(categories))
         categories.sort(key=lambda x: x.name.lower())
 
         submitted = False
-        if request.method == "POST":
-            form = ReviewForm(request.POST)
-            if form.is_valid():
-                cd = form.cleaned_data
-                review_date = datetime.today()
-                cd['item'] = name
-                cd['date'] = review_date
-
-                new_review = Reviews()
-                new_review.name = cd['name']
-                new_review.email = cd['email']
-                new_review.review = cd['review']
-                new_review.item = cd['item']
-                new_review.date = cd['date']
-                new_review.save()
-                return HttpResponseRedirect('?submitted=True')
-        else:
-            form = ReviewForm()
-            if 'submitted' in request.GET:
-                submitted = True
-        arguments = {'title': title, 'product': product, 'reviews': reviews, 'count_reviews': count_reviews,
+        form = ReviewForm()
+        if 'submitted' in request.GET:
+            submitted = True
+        arguments = {'title': self.title, 'product': product, 'reviews': reviews, 'count_reviews': count_reviews,
                      'relevent_products': products, 'categories': categories, 'form': form, 'submitted': submitted}
         arguments.update(arguments_returned)
         return render(request, "products/item.html", arguments)
+
+    def post(self, request, *args, **kwargs):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            review_date = datetime.today()
+            cd['item'] = kwargs['name']
+            cd['date'] = review_date
+
+            new_review = Reviews()
+            new_review.name = cd['name']
+            new_review.email = cd['email']
+            new_review.review = cd['review']
+            new_review.item = cd['item']
+            new_review.date = cd['date']
+            new_review.save()
+            return HttpResponseRedirect('?submitted=True')
 
 
 class BrandsClass(TemplateView):

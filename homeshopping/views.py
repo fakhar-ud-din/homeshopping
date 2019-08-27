@@ -30,7 +30,12 @@ class Search(TemplateView):
         for product in found_products:
             refine_product_list.append(product[0])
 
-        return render(request, self.template_name, {'products': refine_product_list, })
+        cart_count = 0
+        wishlist_count = 0
+        arguments = {'products': refine_product_list}
+        get_cart_items(arguments, request.user, cart_count, wishlist_count)
+
+        return render(request, self.template_name, arguments)
 
 
 class Checkout(TemplateView):
@@ -47,51 +52,26 @@ class Checkout(TemplateView):
     categories.sort(key=lambda x: x.name.lower())
     subcategories = list(set(subcategories))
     subcategories.sort(key=lambda x: x.name.lower())
-    cart_count = 0
-    wishlist_count = 0
 
     arguments = {'products': products,
-                 'categories': categories, 'subcategories': subcategories, 'cart_count': cart_count, 'wishlist_count': wishlist_count}
+                 'categories': categories, 'subcategories': subcategories}
 
     def get(self, request, *args, **kwargs):
-        self.username = request.user
-        if self.username != 'AnonymousUser':
-            items_in_cart = Cart.objects.filter(
-                username=self.username)
-            items_in_wishlist = WishList.objects.filter(
-                username=self.username)
-            cart_items = []
-            wishlist_items = []
-            subtotal_cart = 0
-            for item in items_in_cart:
-                cart_items.append(Product.objects.get(name=item.item_name))
-                subtotal_cart += ((Product.objects.get(name=item.item_name)
-                                   ).price * item.quantity)
-            for item in items_in_wishlist:
-                wishlist_items.append(Product.objects.get(name=item.item_name))
-            self.cart_count = len(cart_items)
-            self.wishlist_count = len(wishlist_items)
-            # items count in cart
-            self.arguments['cart_count'] = self.cart_count
-            # items count in wishlist
-            self.arguments['wishlist_count'] = self.wishlist_count
-            # Poduct Objects Matching If present in Cart
-            self.arguments['cart_items'] = cart_items
-            # Raw Cart Object Items
-            self.arguments['items_in_cart'] = items_in_cart
-            # Items in Wishlist
-            self.arguments['wishlist_items'] = wishlist_items
-            # Total Amount of the products in Cart
-            self.arguments['subtotal_cart'] = subtotal_cart
+        username = request.user
+        if username != "AnonymousUser":
+            cart_count = 0
+            wishlist_count = 0
+            get_cart_items(self.arguments, username,
+                           cart_count, wishlist_count)
 
         return render(request, self.template_name, self.arguments)
 
     def post(self, request, *args, **kwargs):
-        self.username = request.user.username
-        if self.username != "":
+        username = request.user
+        if username != "AnonymousUser":
             items_in_cart = Cart.objects.filter(
-                username=self.username)
-            user = User.objects.get(username=self.username)
+                username=username)
+            user = User.objects.get(username=username)
             first_name = request.POST.get("first-name")
             last_name = request.POST.get("last-name")
             email = request.POST.get("email")
@@ -109,19 +89,19 @@ class Checkout(TemplateView):
                 order_place = OrderBy(order_id=order.id, ordered_by=order, username=user,
                                       item=product, date_placed=date.today(), payment_type=payment_method)
                 order_place.save()
-            Cart.objects.filter(username=self.username).delete()
+            Cart.objects.filter(username=username).delete()
 
             subject = "Order Recieved - HomeShopping"
             message = """Thank You for shopping with Homeshopping.pk\n
-                         Track your order """ + str(order.id) + """ id we hope you had a great time shopping with us !"""
+                        Your Tacking ID is : """ + str(order.id) + """\nWe hope you had a great time shopping with us !"""
 
-            send_mail(subject, message, 'fakharudin99@gmail.com',[email])
+            send_mail(subject, message, 'fakharudin99@gmail.com', [email])
 
             return render(request, 'thank-you.html', {"order_id": order.id, "email": email})
         else:
             return HttpResponseRedirect('/accounts/signup/')
 
-        return render(request, self.template_name, self.arguments)
+        return render(request, template_name, arguments)
 
 
 class Homepage(TemplateView):
@@ -138,84 +118,58 @@ class Homepage(TemplateView):
     categories.sort(key=lambda x: x.name.lower())
     subcategories = list(set(subcategories))
     subcategories.sort(key=lambda x: x.name.lower())
-    cart_count = 0
-    wishlist_count = 0
 
     arguments = {'products': products,
-                 'categories': categories, 'subcategories': subcategories, 'cart_count': cart_count, 'wishlist_count': wishlist_count}
+                 'categories': categories, 'subcategories': subcategories}
 
     def get(self, request, *args, **kwargs):
-        self.username = request.user
-        if "AnonymousUser" != self.username:
-            if request.GET.get('type') == 'add-to-cart':
-                item = request.GET.get('item')
-                quantity = request.GET.get('qty')
-                product = Product.objects.get(name=item)
-                product.is_available -= int(quantity)
-                product.save()
-                if(self.check_existence_cart(self.username, item)):
-                    cart_item = Cart.objects.get(
-                        username=self.username, item_name=item)
-                    cart_item.quantity += int(quantity)
-                    cart_item.save()
-                else:
-                    form = Cart()
-                    form.username = self.username
-                    form.item_name = item
-                    form.quantity = int(quantity)
-                    form.save()
+        username = request.user
+        if request.GET.get('type') == 'add-to-cart':
+            item = request.GET.get('item')
+            quantity = request.GET.get('qty')
+            product = Product.objects.get(name=item)
+            product.is_available -= int(quantity)
+            product.save()
+            if(self.check_existence_cart(username, item)):
+                cart_item = Cart.objects.get(
+                    username=username, item_name=item)
+                cart_item.quantity += int(quantity)
+                cart_item.save()
+            else:
+                form = Cart()
+                form.username = username
+                form.item_name = item
+                form.quantity = int(quantity)
+                form.save()
+            return render(request, self.template_name, self.arguments)
+        elif request.GET.get('type') == 'add-to-wishlist':
+            item = request.GET.get('item')
+            if not self.check_existence_wishlist(username, item):
+                form = WishList()
+                form.username = username
+                form.item_name = item
+                form.save()
                 return render(request, self.template_name, self.arguments)
-            elif request.GET.get('type') == 'add-to-wishlist':
-                item = request.GET.get('item')
-                if not self.check_existence_wishlist(self.username, item):
-                    form = WishList()
-                    form.username = self.username
-                    form.item_name = item
-                    form.save()
-                    return render(request, self.template_name, self.arguments)
+            return render(request, self.template_name, self.arguments)
+        elif request.GET.get('type') == 'delete-from-cart':
+            item = request.GET.get('item')
+            quantity = (Cart.objects.get(
+                username=username, item_name=item)).quantity
+            product = Product.objects.get(name=item)
+            product.is_available += quantity
+            product.save()
+            Cart.objects.filter(username=username,
+                                item_name=item).delete()
+            return render(request, self.template_name, self.arguments)
+        elif request.GET.get('type') == 'delete-from-wishlist':
+            item = request.GET.get('item')
+            WishList.objects.filter(item_name=item).delete()
+            return render(request, self.template_name, self.arguments)
 
-                return render(request, self.template_name, self.arguments)
-            elif request.GET.get('type') == 'delete-from-cart':
-                item = request.GET.get('item')
-                quantity = (Cart.objects.get(
-                    username=self.username, item_name=item)).quantity
-                product = Product.objects.get(name=item)
-                product.is_available += quantity
-                product.save()
-                Cart.objects.filter(username=self.username,
-                                    item_name=item).delete()
-                return render(request, self.template_name, self.arguments)
-            elif request.GET.get('type') == 'delete-from-wishlist':
-                item = request.GET.get('item')
-                WishList.objects.filter(item_name=item).delete()
-                return render(request, self.template_name, self.arguments)
+        cart_count = 0
+        wishlist_count = 0
+        get_cart_items(self.arguments, username, cart_count, wishlist_count)
 
-        items_in_cart = Cart.objects.filter(
-            username=self.username)
-        items_in_wishlist = WishList.objects.filter(
-            username=self.username)
-        cart_items = []
-        wishlist_items = []
-        subtotal_cart = 0
-        for item in items_in_cart:
-            cart_items.append(Product.objects.get(name=item.item_name))
-            subtotal_cart += ((Product.objects.get(name=item.item_name)
-                               ).price * item.quantity)
-        for item in items_in_wishlist:
-            wishlist_items.append(Product.objects.get(name=item.item_name))
-
-        self.cart_count = len(cart_items)
-        self.wishlist_count = len(wishlist_items)
-        self.arguments['cart_count'] = self.cart_count  # items count in cart
-        # items count in wishlist
-        self.arguments['wishlist_count'] = self.wishlist_count
-        # Poduct Objects Matching If present in Cart
-        self.arguments['cart_items'] = cart_items
-        # Raw Cart Object Items
-        self.arguments['items_in_cart'] = items_in_cart
-        self.arguments['wishlist_items'] = wishlist_items  # Items in Wishlist
-        # Total of the products in Cart
-        self.arguments['subtotal_cart'] = subtotal_cart
         return render(request, self.template_name, self.arguments)
 
     def check_existence_cart(self, username, item):
@@ -233,3 +187,31 @@ class Homepage(TemplateView):
             return True
         else:
             return False
+
+
+def get_cart_items(arguments, username, cart_count, wishlist_count):
+    items_in_cart = Cart.objects.filter(username=username)
+    items_in_wishlist = WishList.objects.filter(username=username)
+    cart_items = []
+    wishlist_items = []
+    subtotal_cart = 0
+    for item in items_in_cart:
+        cart_items.append(Product.objects.get(name=item.item_name))
+        subtotal_cart += ((Product.objects.get(name=item.item_name)
+                           ).price * item.quantity)
+    for item in items_in_wishlist:
+        wishlist_items.append(Product.objects.get(name=item.item_name))
+    cart_count = len(cart_items)
+    wishlist_count = len(wishlist_items)
+    # items count in cart
+    arguments['cart_count'] = cart_count
+    # items count in wishlist
+    arguments['wishlist_count'] = wishlist_count
+    # Poduct Objects Matching If present in Cart
+    arguments['cart_items'] = cart_items
+    # Raw Cart Object Items
+    arguments['items_in_cart'] = items_in_cart
+    # Items in Wishlist
+    arguments['wishlist_items'] = wishlist_items
+    # Total of the products in Cart
+    arguments['subtotal_cart'] = subtotal_cart
