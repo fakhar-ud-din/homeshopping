@@ -344,12 +344,14 @@
                             success: function (data) {
                                 element.value = "added"
                                 element.innerHTML = "<i class='fa fa-shopping-cart'></i> ADDED!";
+                                document.getElementById("qty-errors").innerHTML = ""
                                 document.getElementById("qty-message").innerHTML = "Item Added to Cart!"
 
                             }
                         });
                     }
                     else {
+                        document.getElementById("qty-message").innerHTML = ""
                         document.getElementById("qty-errors").innerHTML = "Quantity Not Available in Stock!"
                     }
                 }
