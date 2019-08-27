@@ -67,8 +67,8 @@ class Checkout(TemplateView):
         return render(request, self.template_name, self.arguments)
 
     def post(self, request, *args, **kwargs):
-        username = request.user
-        if username != "AnonymousUser":
+        username = request.user.username
+        if username != "":
             items_in_cart = Cart.objects.filter(
                 username=username)
             user = User.objects.get(username=username)
