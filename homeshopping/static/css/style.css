@@ -1585,12 +1585,6 @@ input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 
 /*----------------sectionsectionsectionsection------------*\
 	Product view
 \*----------------------------*/
-.stripe-order{
-  top: 100%;
-  margin-bottom: -100px;
-}
-
-
 .main-block .section {
   width: 80%;
   background-color: rgba(226, 225, 225, 0.425);
