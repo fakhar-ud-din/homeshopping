@@ -273,6 +273,14 @@
 		var phone_reg = /^(([.+]92)|0)3[0-2]{2}[0-9]{7}$/;
 		var zipcode_reg = /^[0-9]{0,5}$/
 		if (firstName.value && lastName.value && email.value && address.value && city.value && country.value && zipcode.value && phone.value) {
+			firstName.className = firstName.className.replace(' field-error', "")
+			lastName.className = lastName.className.replace(' field-error', "")
+			email.className = email.className.replace(' field-error', "")
+			address.className = address.className.replace(' field-error', "")
+			country.className = country.className.replace(' field-error', "")
+			city.className = city.className.replace(' field-error', "")
+			zipcode.className = zipcode.className.replace(' field-error', "")
+			phone.className = phone.className.replace(' field-error', "")
 			document.getElementById("error-message").innerText = ""
 			if (email_reg.test(email.value)) {
 				if (phone_reg.test(phone.value)) {
