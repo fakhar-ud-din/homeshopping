@@ -368,10 +368,11 @@
                         },
                         dataType: 'text',
                         success: function (data) {
+                            document.getElementById("qty-errors-" + element.value).innerHTML = ""
+                            document.getElementById("qty-message-" + element.value).innerHTML = "Item Added to Cart!"
+
                             element.value = "added"
-                            element.innerHTML = "<i class='fa fa-shopping-cart'></i> ADDED!";
-                            document.getElementById("qty-errors").innerHTML = ""
-                            document.getElementById("qty-message").innerHTML = "Item Added to Cart!"
+                            element.innerHTML = "<i class='fa fa-check'></i> ADDED!";
 
                         }
                     });
@@ -380,8 +381,8 @@
 
             }
             else {
-                document.getElementById("qty-message").innerHTML = ""
-                document.getElementById("qty-errors").innerHTML = "Item Already in Cart!"
+                document.getElementById("qty-errors-" + element.value).innerHTML = "Item Already in Cart!"
+                document.getElementById("qty-message-" + element.value).innerHTML = ""
             }
         }
         function add_item_to_wishlist(element) {

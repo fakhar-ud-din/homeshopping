@@ -105,8 +105,8 @@
                                             <i class="fa fa-star"></i>
                                         </div>
                                         <div class="qty-update">
-                                            <h6 id="qty-errors"></h6>
-                                            <h6 id="qty-message"></h6>
+                                            <h6 id="qty-errors-{{item.name}}" style="color: #be332a"></h6>
+                                            <h6 id="qty-message-{{item.name}}" style="color: #4ba029"></h6>
                                         </div>
                                         <div class="product-btns">
                                             <button value="{{ item.name }}" onclick="add_item_to_wishlist(this)"
@@ -120,7 +120,7 @@
                                     </div>
                                     <div class="add-to-cart">
                                         {% if item.is_available > 0 %}
-                                        <button type="submit" value="{{product.name}}"
+                                        <button type="submit" value="{{item.name}}"
                                             onclick="add_item_to_cart_function(this)" class="add-to-cart-btn"><i
                                                 class="fa fa-shopping-cart"></i> add to
                                             cart</button>
