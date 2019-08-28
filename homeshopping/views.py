@@ -8,7 +8,6 @@ from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 import stripe
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -46,20 +45,23 @@ class Checkout(TemplateView):
     template_name = 'checkout.html'
 
     username = None
-    products = Product.objects.all()
-    categories = []
-    subcategories = []
-    for product in products:
-        categories.append(product.category)
-        subcategories.append(product.subcategory)
-    categories = list(set(categories))
-    categories.sort(key=lambda x: x.name.lower())
-    subcategories = list(set(subcategories))
-    subcategories.sort(key=lambda x: x.name.lower())
-    arguments = {'products': products,
-                 'categories': categories, 'subcategories': subcategories}
+    arguments = {}
 
     def get(self, request, *args, **kwargs):
+
+        products = Product.objects.all()
+        categories = []
+        subcategories = []
+        for product in products:
+            categories.append(product.category)
+            subcategories.append(product.subcategory)
+        categories = list(set(categories))
+        categories.sort(key=lambda x: x.name.lower())
+        subcategories = list(set(subcategories))
+        subcategories.sort(key=lambda x: x.name.lower())
+        self.arguments = {'products': products,
+                          'categories': categories, 'subcategories': subcategories}
+
         username = request.user
         key = settings.STRIPE_PUBLISHABLE_KEY
         self.arguments['key'] = key
@@ -126,21 +128,24 @@ class Homepage(TemplateView):
     template_name = 'homepage.html'
 
     username = None
-    products = Product.objects.all()
-    categories = []
-    subcategories = []
-    for product in products:
-        categories.append(product.category)
-        subcategories.append(product.subcategory)
-    categories = list(set(categories))
-    categories.sort(key=lambda x: x.name.lower())
-    subcategories = list(set(subcategories))
-    subcategories.sort(key=lambda x: x.name.lower())
-
-    arguments = {'products': products,
-                 'categories': categories, 'subcategories': subcategories}
+    arguments = {}
 
     def get(self, request, *args, **kwargs):
+
+        products = Product.objects.all()
+        categories = []
+        subcategories = []
+        for product in products:
+            categories.append(product.category)
+            subcategories.append(product.subcategory)
+        categories = list(set(categories))
+        categories.sort(key=lambda x: x.name.lower())
+        subcategories = list(set(subcategories))
+        subcategories.sort(key=lambda x: x.name.lower())
+
+        self.arguments = {'products': products,
+                          'categories': categories, 'subcategories': subcategories}
+
         username = request.user
         if request.GET.get('type') == 'add-to-cart':
             item = request.GET.get('item')

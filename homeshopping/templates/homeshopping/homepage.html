@@ -129,7 +129,7 @@
                                         </div>
                                     </div>
                                     <div class="add-to-cart">
-                                        {% if product.is_available > 0 %}
+                                        {% if product.is_available %}
                                         <button type="submit" value="{{ product.name }}"
                                             onclick="add_item_to_cart_function(this)" class="add-to-cart-btn"><i
                                                 class="fa fa-shopping-cart"></i> add to
