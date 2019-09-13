@@ -356,6 +356,7 @@ input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 
 
 .section-title .section-nav {
   float: right;
+  overflow: auto;
 }
 
 .section-title .section-nav .section-tab-nav {
@@ -681,10 +682,10 @@ input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 
 #banner-img{
   width: 100%;
 }
+
 #banner-img>img{
-  margin-left: 10%;
-  width: calc(100%-20%);
-  height: 30%;
+  width: 100%;
+  height: 40%;
   align-content: center;
 }
 
@@ -1587,7 +1588,6 @@ input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 
 \*----------------------------*/
 .main-block .section {
   width: 80%;
-  background-color: rgba(226, 225, 225, 0.425);
   margin: 0;
   margin-left: auto;
   margin-right: auto;
@@ -1874,7 +1874,7 @@ input[type="radio"]:checked~.caption2, input[type="checkbox"]:checked~.caption2 
 
 #product-tab .tab-nav li {
   display: inline-block;
-  background: rgb(241, 240, 240);
+  background-color: rgb(255, 255, 255);
   padding: 0px 15px;
 }
 
